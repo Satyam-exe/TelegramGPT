@@ -7,7 +7,7 @@ from db.config import col
 
 def get_response(message):
     messages_to_send = [{"role": "system", "content": start_message}]
-    cursor = col.find({'username': message.from_user.username}).sort([("time", pymongo.DESCENDING)]).limit(10)
+    cursor = col.find({'user_id': message.from_user.id}).sort([("time", pymongo.DESCENDING)]).limit(10)
     for doc in cursor:
         if not doc['is_revoked']:
             messages_to_send.append({"role": "user", "content": doc['message']})

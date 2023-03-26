@@ -7,6 +7,7 @@ from .config import col
 
 def insert_message(message: telebot.types.Message, reply):
     col.insert_one({
+        'user_id': message.from_user.id,
         'username': message.from_user.username,
         'message': message.text,
         'reply': reply,
@@ -15,5 +16,5 @@ def insert_message(message: telebot.types.Message, reply):
     })
 
 
-def revoke_messages(username):
-    col.update_many({"username": username}, {"$set": {"is_revoked": True}})
+def revoke_messages(user_id):
+    col.update_many({"user_id": user_id}, {"$set": {"is_revoked": True}})

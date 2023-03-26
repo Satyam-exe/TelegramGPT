@@ -8,7 +8,7 @@ from db.db import insert_message, revoke_messages
 
 @bot.message_handler(commands=['start'])
 def send_intro(message: telebot.types.Message):
-    revoke_messages(message.from_user.username)
+    revoke_messages(message.from_user.id)
     bot.reply_to(
         message, start_message_reply(message)
     )
