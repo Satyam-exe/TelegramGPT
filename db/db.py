@@ -1,17 +1,21 @@
-import datetime
+from datetime import datetime
 
 import pytz
 import telebot.types
-from .config import messages_col, images_col
+from .config import messages_col, images_col, voices_col
 
 
-def insert_message(message: telebot.types.Message, reply):
+def insert_message(message: telebot.types.Message, reply, transcribed_voice=None):
+    if transcribed_voice:
+        content = transcribed_voice
+    else:
+        content = message.text
     messages_col.insert_one({
         'user_id': message.from_user.id,
         'username': message.from_user.username,
-        'message': message.text,
+        'message': content,
         'reply': reply,
-        'time': datetime.datetime.now(pytz.timezone('Asia/Kolkata')),
+        'time': datetime.now(pytz.timezone('Asia/Kolkata')),
         'is_revoked': False
     })
 
@@ -26,5 +30,16 @@ def insert_image(message: telebot.types.Message, image_url):
         'username': message.from_user.username,
         'prompt': message.text.replace('/img', ''),
         'image_url': image_url,
-        'time': datetime.datetime.now(pytz.timezone('Asia/Kolkata')),
+        'time': datetime.now(pytz.timezone('Asia/Kolkata')),
+    })
+
+
+def insert_voice(message: telebot.types.Message, path, transcribed_voice=None, translated_voice=None):
+    voices_col.insert_one({
+        'user_id': message.from_user.id,
+        'username': message.from_user.username,
+        'path': path,
+        'transcription': transcribed_voice,
+        'translation': translated_voice,
+        'time': datetime.now(pytz.timezone('Asia/Kolkata')),
     })
