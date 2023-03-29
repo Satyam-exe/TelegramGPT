@@ -1,4 +1,3 @@
-import time
 from tempfile import TemporaryDirectory
 
 import openai.error
@@ -157,8 +156,5 @@ def reply_to_text_prompt(message: telebot.types.Message):
         on_api_telegram_exception_429(reply_to_text_prompt, message)
 
 
-try:
-    bot.polling()
-except Exception as e:
-    print(e)
-    time.sleep(5)
+telebot.apihelper.RETRY_ON_ERROR = True
+bot.polling()

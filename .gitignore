@@ -1,2 +1,2 @@
-.env
-google/youtube/headers_auth.json
+.*
+**/__pychache__
