@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytz
 import telebot.types
-from .config import messages_col, images_col, voices_col
+from .config import messages_col, images_col, voices_col, music_col
 
 
 def insert_message(message: telebot.types.Message, reply, transcribed_voice=None):
@@ -43,3 +43,26 @@ def insert_voice(message: telebot.types.Message, path, transcribed_voice=None, t
         'translation': translated_voice,
         'time': datetime.now(pytz.timezone('Asia/Kolkata')),
     })
+
+
+def insert_music(message: telebot.types.Message, query, search_results):
+    if search_results[0]['resultType'] == 'song':
+        music_col.insert_one({
+            "user_id": message.from_user.id,
+            "username": message.from_user.username,
+            "query": query,
+            "result_type": "song",
+            "video_id": search_results[0]['videoId'],
+            "title": search_results[0]['title'],
+            "artists": [
+                {
+                    "name": search_results[0]['artists'][0]['name'],
+                    "id": search_results[0]['artists'][0]['id']
+                }
+            ],
+            "album": {
+                "name": search_results[0]['album']['name'],
+                "id": search_results[0]['album']['id']
+            },
+            'time': datetime.now(pytz.timezone('Asia/Kolkata')),
+        })
