@@ -6,18 +6,25 @@ from .config import messages_col, images_col, voices_col, music_col
 
 
 def insert_message(message: telebot.types.Message, reply, transcribed_voice=None):
+    content = message.text
     if transcribed_voice:
         content = transcribed_voice
-    else:
-        content = message.text
-    messages_col.insert_one({
+    if '/chat' in content:
+        content = content.replace('/chat', '')
+    message_info = {
         'user_id': message.from_user.id,
         'username': message.from_user.username,
         'message': content,
         'reply': reply,
         'time': datetime.now(pytz.timezone('Asia/Kolkata')),
         'is_revoked': False
-    })
+    }
+    if message.chat.type == 'group' or message.chat.type == 'supergroup':
+        message_info['group'] = {
+            'name': message.chat.title,
+            'id': message.chat.id,
+        }
+    messages_col.insert_one(message_info)
 
 
 def revoke_messages(user_id):
