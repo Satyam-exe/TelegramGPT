@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytz
 import telebot.types
-from .config import messages_col, images_col, voices_col, music_col
+from .config import messages_col, images_col, voices_col, music_col, users_col, group_col, api_keys_col
 
 
 def insert_message(message: telebot.types.Message, reply, transcribed_voice=None):
@@ -73,3 +73,45 @@ def insert_music(message: telebot.types.Message, query, search_results):
             },
             'time': datetime.now(pytz.timezone('Asia/Kolkata')),
         })
+
+
+def insert_user_if_not_exists(message: telebot.types.Message, openai_api_key=None):
+    if not users_col.count_documents({'user_id': message.from_user.id}):
+        users_col.insert_one({
+            "user_id": message.from_user.id,
+            "username": message.from_user.username,
+            'fullname': message.from_user.full_name,
+            'openai_api_key': openai_api_key,
+            'time': datetime.now(pytz.timezone('Asia/Kolkata')),
+        })
+
+
+def insert_group_if_not_exists(message: telebot.types.Message):
+    if not group_col.count_documents({'group_id': message.chat.id}):
+        group_col.insert_one({
+            "group_id": message.chat.id,
+            "group_name": message.chat.title,
+            'time': datetime.now(pytz.timezone('Asia/Kolkata')),
+        })
+
+
+def insert_api_key(message: telebot.types.Message, api_key, key_type):
+    api_keys_col.insert_one({
+        'user_id': message.from_user.id,
+        'username': message.from_user.username,
+        'key': api_key,
+        'type': key_type,
+        'is_expired': False,
+        'time': datetime.now(pytz.timezone('Asia/Kolkata')),
+    })
+
+
+def get_api_key(user_id, key_type):
+    for doc in api_keys_col.find({'user_id': user_id}):
+        if doc['type'] == key_type and not doc['is_expired']:
+            return doc['key']
+
+
+def remove_api_keys(user_id, key_type):
+    if api_keys_col.count_documents({'user_id': user_id, 'type': key_type}):
+        api_keys_col.delete_many({'user_id': user_id, 'type': key_type})

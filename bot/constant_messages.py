@@ -23,6 +23,9 @@ You can also get songs as audio files. To do so, use the /music command in this 
     /music <song>
 Here, 'song' is the name of the song you wish to be sent.
 
+In order to access most of the features, you need to set your API Key up. Please type in '/apikey help' to get instructions on \
+how to do so.
+
 This is still quite underdeveloped, so there might be some issues. Wishing you a great experience!
 Maybe try \'Good Morning, TelegramGPT\'?
 """
@@ -44,3 +47,46 @@ empty_chat_message = 'Please enter some text after the /chat command.'
 
 invalid_music_type_message = \
     'Please enter a valid type. [songs, videos, albums, artists, playlists, community_playlists, featured_playlists]'
+
+api_key_not_set_message = lambda \
+        key_type: f'Your {key_type} API Key is not set. Please follow the instructions on /apikey to set your API Key and continue.'
+
+set_api_key_message = """
+**SETTING UP API KEY**
+To set up your OpenAI API Key, follow these steps:
+1. Go to https://platform.openai.com/ and create an account. If you already have an account, please log in.
+2. Go to https://platform.openai.com/account/api-keys. Under the 'API keys' section, please click on \
+'Create new secret key'. 
+3. The secret key will not be shown again once you create it, so remember to copy it. In case you did not copy it, \
+just create a new one and revoke the previous one.
+4. Type the following command here:
+    '/apikey method=setup type=openai key=<your_key_here>'
+For example, if the API Key is 'abc123', then you will type '/apikey method=setup type=openai key=abc123'
+
+**UPDATING API KEY**
+To set up your OpenAI API Key, follow these steps:
+1. Obtain your new key.
+2. Type the following command here:
+    '/apikey method=setup type=openai key=<your_key_here>'
+For example, if your new API Key is 'abc123', then you will type '/apikey method=update type=openai key=abc123'
+
+**REMOVING API KEY**
+To set up your OpenAI API Key, follow these steps:
+1. Type the following command here:
+    '/apikey method=remove type=openai key=<your_key_here>'
+For example, if your API Key is 'abc123', then you will type '/apikey method=remove type=openai key=abc123'
+
+NOTE: Once you have removed the API Key, it will also be removed from the server at the same time. Your API Key can only \
+be used by the accounts from which the key has been set up.
+"""
+
+empty_api_key_message = "Please enter the required parameters after the /apikey command. If you need help, please type " \
+                        "'/apikey help'"
+
+invalid_api_key_message = lambda param: f"The following parameter(s) are invalid:\n{param}"
+
+api_key_setup_successful_message = "Your API Key has been successfully set up. You may continue using all the features of the bot now."
+
+api_key_update_successful_message = "Your API Key has been successfully updated."
+
+api_key_remove_successful_message = "Your API Key has been successfully removed."

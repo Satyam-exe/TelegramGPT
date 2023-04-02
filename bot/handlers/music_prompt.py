@@ -5,16 +5,20 @@ import telebot
 from bot.constant_messages import invalid_music_type_message, empty_music_query_message
 from bot.constants import bot
 from bot.error_handlers import on_api_telegram_exception_429
-from db.db import insert_music
+from db.db import insert_music, insert_user_if_not_exists
 from google.youtube.config import query_types
 from google.youtube.ytmusic import get_music_results, convert_yt_to_ogg
 
 
 def reply_with_music(message: telebot.types.Message):
     try:
+        insert_user_if_not_exists(message)
         str_list = message.text.split(' ')
         type = 'songs'
-        query = message.text.replace('/music', '')
+        if '/music@sv_telegram_gpt_bot' in message.text:
+            query = message.text.replace('/music@sv_telegram_gpt_bot', '')
+        else:
+            query = message.text.replace('/music', '')
         for string in str_list:
             if 'type=' in string:
                 untested_type = string.split('=')[1]

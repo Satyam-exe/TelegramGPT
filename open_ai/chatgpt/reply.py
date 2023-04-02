@@ -1,11 +1,13 @@
 import openai
 import pymongo
 
+from db.db import get_api_key
 from open_ai.chatgpt.constant_messages import system_message
 from db.config import messages_col
 
 
 def get_response(content, user_id, full_name, username):
+    api_key = get_api_key(user_id=user_id, key_type='openai')
     messages_to_send = [
         {"role": "system", "content": system_message(full_name=full_name, user_id=user_id, username=username)}
     ]
@@ -17,9 +19,9 @@ def get_response(content, user_id, full_name, username):
     messages_to_send.append({"role": "user", "content": content})
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=messages_to_send
+        messages=messages_to_send,
+        api_key=api_key
     )
-    print(messages_to_send)
     return response
 
 
