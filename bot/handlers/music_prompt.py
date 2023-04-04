@@ -5,7 +5,7 @@ import telebot
 from bot.constant_messages import invalid_music_type_message, empty_music_query_message
 from bot.constants import bot
 from bot.error_handlers import on_api_telegram_exception_429
-from db.db import insert_music, insert_user_if_not_exists
+from db.db import insert_music, insert_user_if_not_exists, insert_group_if_not_exists
 from google.youtube.config import query_types
 from google.youtube.ytmusic import get_music_results, convert_yt_to_ogg
 
@@ -13,6 +13,8 @@ from google.youtube.ytmusic import get_music_results, convert_yt_to_ogg
 def reply_with_music(message: telebot.types.Message):
     try:
         insert_user_if_not_exists(message)
+        if message.chat.type == 'group' or message.chat.type == 'supergroup':
+            insert_group_if_not_exists(message)
         str_list = message.text.split(' ')
         type = 'songs'
         if '/music@sv_telegram_gpt_bot' in message.text:

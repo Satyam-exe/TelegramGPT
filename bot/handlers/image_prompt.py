@@ -4,15 +4,17 @@ import telebot
 from bot.constant_messages import invalid_size_message, empty_img_prompt_message, api_key_not_set_message
 from bot.constants import bot
 from bot.error_handlers import on_api_telegram_exception_429
-from db.db import insert_image, insert_user_if_not_exists
+from db.db import insert_image, insert_user_if_not_exists, insert_group_if_not_exists
 from open_ai.common import is_openai_api_key_set
 from open_ai.dalle.reply import get_image_url
 
 
 def reply_with_dalle_img(message: telebot.types.Message):
+    insert_user_if_not_exists(message)
+    if message.chat.type == 'group' or message.chat.type == 'supergroup':
+        insert_group_if_not_exists(message)
     if is_openai_api_key_set(user_id=message.from_user.id):
         try:
-            insert_user_if_not_exists(message)
             str_list = message.text.split(' ')
             size = '512x512'
             if '/img@sv_telegram_gpt_bot' in message.text:

@@ -4,12 +4,14 @@ from bot.constant_messages import empty_api_key_message, invalid_api_key_message
     api_key_update_successful_message, api_key_remove_successful_message, set_api_key_message
 from bot.constants import bot, VALID_API_KEY_TYPES, VALID_API_KEY_MODES
 from bot.error_handlers import on_api_telegram_exception_429
-from db.db import insert_api_key, remove_api_keys
+from db.db import insert_api_key, remove_api_keys, insert_group_if_not_exists
 from open_ai.common import test_openai_api_key, expire_openai_api_key
 
 
 def set_up_api_key(message: telebot.types.Message):
     try:
+        if message.chat.type == 'group' or message.chat.type == 'supergroup':
+            insert_group_if_not_exists(message)
         mode, key, key_type = None, None, None
         content = message.text
         if '/apikey@sv_telegram_gpt_bot' in content:

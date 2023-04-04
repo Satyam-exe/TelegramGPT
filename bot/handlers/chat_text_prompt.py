@@ -3,15 +3,17 @@ import telebot
 from bot.constant_messages import empty_chat_message, api_key_not_set_message
 from bot.constants import bot
 from bot.error_handlers import on_api_telegram_exception_429
-from db.db import insert_message, insert_user_if_not_exists
+from db.db import insert_message, insert_user_if_not_exists, insert_group_if_not_exists
 from open_ai.chatgpt.reply import get_chatgpt_reply
 from open_ai.common import is_openai_api_key_set
 
 
 def reply_to_text_prompt(message: telebot.types.Message):
+    insert_user_if_not_exists(message)
+    if message.chat.type == 'group' or message.chat.type == 'supergroup':
+        insert_group_if_not_exists(message)
     if is_openai_api_key_set(user_id=message.from_user.id):
         try:
-            insert_user_if_not_exists(message)
             content = message.text
             if '/chat@sv_telegram_gpt_bot' in content:
                 content = content.replace('/chat@sv_telegram_gpt_bot', '')
