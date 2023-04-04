@@ -75,13 +75,12 @@ def insert_music(message: telebot.types.Message, query, search_results):
         })
 
 
-def insert_user_if_not_exists(message: telebot.types.Message, openai_api_key=None):
+def insert_user_if_not_exists(message: telebot.types.Message):
     if not users_col.count_documents({'user_id': message.from_user.id}):
         users_col.insert_one({
             "user_id": message.from_user.id,
             "username": message.from_user.username,
             'fullname': message.from_user.full_name,
-            'openai_api_key': openai_api_key,
             'time': datetime.now(pytz.timezone('Asia/Kolkata')),
         })
 
