@@ -32,7 +32,7 @@ def reply_with_music(message: telebot.types.Message):
         if not query:
             bot.reply_to(message, empty_music_query_message)
             return
-        search_results = get_music_results(query=query, type=type)
+        search_results = get_music_results(query=query, query_type=type)
         if not search_results:
             bot.reply_to(message, 'Sorry, I could not find that song.')
             return
