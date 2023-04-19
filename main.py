@@ -1,4 +1,3 @@
-import openai.error
 import telebot
 
 from bot.constants import bot
@@ -24,8 +23,15 @@ def register_message_handlers():
 register_message_handlers()
 
 telebot.apihelper.RETRY_ON_ERROR = True
-while True:
-    try:
-        bot.polling()
-    except openai.error.RateLimitError:
-        pass
+
+
+def run_bot():
+    while True:
+        try:
+            bot.polling(non_stop=True)
+        except:
+            run_bot()
+
+
+if __name__ == '__main__':
+    run_bot()

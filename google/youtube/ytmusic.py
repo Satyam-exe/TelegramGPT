@@ -9,8 +9,8 @@ from pytube import YouTube
 from settings import TEMP_OGG_DIR
 
 
-def get_music_results(query, type):
-    search_results = ytmusic_client.search(query=query, filter=type, limit=1)
+def get_music_results(query, query_type):
+    search_results = ytmusic_client.search(query=query, filter=query_type, limit=1)
     return search_results
 
 
