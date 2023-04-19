@@ -22,5 +22,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code into the container
 COPY . .
 
+RUN mkdir .tmp && mkdir .tmp/mp3 && mkdir .tmp/ogg
+
 # Run the main.py script
 CMD ["python", "main.py"]
