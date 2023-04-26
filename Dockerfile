@@ -1,5 +1,5 @@
 # Use the official Python image as the base image
-FROM python:3.9
+FROM python:3:9
 
 # Install ffmpeg using apt-get
 RUN apt-get update && apt-get install -y ffmpeg
@@ -25,4 +25,4 @@ COPY . .
 RUN mkdir .tmp && mkdir .tmp/mp3 && mkdir .tmp/ogg
 
 # Run the main.py script
-CMD ["python", "main.py"]
+CMD ["python3", "main.py"]

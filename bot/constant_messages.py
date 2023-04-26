@@ -73,8 +73,8 @@ For example, if your new API Key is 'abc123', then you will type '/apikey method
 **REMOVING API KEY**
 To set up your OpenAI API Key, follow these steps:
 1. Type the following command here:
-    '/apikey method=remove type=openai key=<your_key_here>'
-For example, if your API Key is 'abc123', then you will type '/apikey method=remove type=openai key=abc123'
+    '/apikey method=remove type=openai'
+For example, if you want to delete your OpenAI API Key, then you will type '/apikey method=remove type=openai'
 
 NOTE: Once you have removed the API Key, it will also be removed from the server at the same time. Your API Key can only \
 be used by the accounts from which the key has been set up.

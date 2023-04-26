@@ -7,7 +7,7 @@ from bot.handlers.clear_context import register_clear_context
 from bot.handlers.image_prompt import register_image
 from bot.handlers.intro import register_intro
 from bot.handlers.music_prompt import register_music
-from bot.handlers.set_up_api_key import register_api_key_command
+from bot.handlers.manage_api_keys import register_api_key_command
 
 
 def register_message_handlers():
