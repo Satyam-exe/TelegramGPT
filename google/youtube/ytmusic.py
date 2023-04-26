@@ -1,8 +1,6 @@
 import os
 import tempfile
 
-from pydub import AudioSegment
-
 from .config import ytmusic_client, get_ytmusic_song_url
 from pytube import YouTube
 
