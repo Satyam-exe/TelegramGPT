@@ -90,3 +90,5 @@ api_key_setup_successful_message = "Your API Key has been successfully set up. Y
 api_key_update_successful_message = "Your API Key has been successfully updated."
 
 api_key_remove_successful_message = "Your API Key has been successfully removed."
+
+api_key_expired_message = "Your API Key has/is already expired. Please update it using the /apikey command."

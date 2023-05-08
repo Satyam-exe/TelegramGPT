@@ -1,7 +1,8 @@
 import openai
 import telebot
 
-from bot.constant_messages import invalid_size_message, empty_img_prompt_message, api_key_not_set_message
+from bot.constant_messages import invalid_size_message, empty_img_prompt_message, api_key_not_set_message, \
+    api_key_expired_message
 from bot.constants import bot
 from bot.error_handlers import on_api_telegram_exception_429
 from db.db import insert_image, insert_user_if_not_exists, insert_group_if_not_exists
@@ -46,6 +47,8 @@ def reply_with_dalle_img(message: telebot.types.Message):
                 on_api_telegram_exception_429(reply_with_dalle_img, message)
         except openai.error.InvalidRequestError:
             bot.reply_to(message, invalid_size_message)
+        except openai.error.RateLimitError:
+            bot.reply_to(message, api_key_expired_message)
     else:
         bot.reply_to(message, api_key_not_set_message('OpenAI'))
 

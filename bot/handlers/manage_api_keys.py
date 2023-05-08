@@ -1,7 +1,8 @@
+import openai.error
 import telebot.types
 
 from bot.constant_messages import empty_api_key_message, invalid_api_key_message, api_key_setup_successful_message, \
-    api_key_update_successful_message, api_key_remove_successful_message, set_api_key_message
+    api_key_update_successful_message, api_key_remove_successful_message, set_api_key_message, api_key_expired_message
 from bot.constants import bot, VALID_API_KEY_TYPES, VALID_API_KEY_MODES
 from bot.error_handlers import on_api_telegram_exception_429
 from db.db import insert_api_key, remove_api_keys, insert_group_if_not_exists, insert_user_if_not_exists
@@ -17,7 +18,7 @@ def manage_api_keys_command(message: telebot.types.Message):
         content = message.text
         if '/apikey@sv_telegram_gpt_bot' in content:
             content = content.replace('/apikey@sv_telegram_gpt_bot', '')
-        if '/apikey' in content:
+        elif '/apikey' in content:
             content = content.replace('/apikey', '')
         if not content:
             bot.reply_to(message, empty_api_key_message)
@@ -56,6 +57,8 @@ def manage_api_keys_command(message: telebot.types.Message):
             bot.reply_to(message, api_key_remove_successful_message)
     except telebot.apihelper.ApiTelegramException:
         on_api_telegram_exception_429(manage_api_keys_command, message)
+    except openai.error.RateLimitError:
+        bot.reply_to(message, api_key_expired_message)
 
 
 def register_api_key_command():
