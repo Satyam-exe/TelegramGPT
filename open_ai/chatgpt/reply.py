@@ -1,5 +1,6 @@
 import openai
 import pymongo
+from openai import OpenAI
 
 from db.db import get_api_key
 from open_ai.chatgpt.constant_messages import system_message
@@ -17,11 +18,12 @@ def get_response(content, user_id, full_name, username):
             messages_to_send.insert(1, {"role": "user", "content": doc['message']})
             messages_to_send.insert(2, {"role": "assistant", "content": doc['reply']})
     messages_to_send.append({"role": "user", "content": content})
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+    openai_client = OpenAI(api_key=api_key)
+    response = openai_client.chat.completions.create(
         messages=messages_to_send,
-        api_key=api_key
-    )
+        model='gpt-3.5-turbo',
+        user=user_id
+    ).model_dump()
     return response
 
 

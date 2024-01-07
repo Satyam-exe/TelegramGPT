@@ -1,8 +1,8 @@
-import os
 import tempfile
 
 from .config import ytmusic_client, get_ytmusic_song_url
-from pytube import YouTube
+
+from yt_dlp import YoutubeDL
 
 from settings import TEMP_OGG_DIR
 
@@ -14,12 +14,11 @@ def get_music_results(query, query_type):
 
 def convert_yt_to_ogg(song_id):
     music_url = get_ytmusic_song_url(song_id)
-    pytube_client = YouTube(url=music_url, use_oauth=True)
-    video = pytube_client.streams.filter(only_audio=True).first()
     temp_dir = tempfile.TemporaryDirectory(dir=TEMP_OGG_DIR)
-    mp4_file = video.download(output_path=temp_dir.name)
-    base, extension = os.path.splitext(mp4_file)
-    ogg_file = base + '.ogg'
-    os.rename(mp4_file, ogg_file)
-    return [ogg_file, temp_dir]
-
+    options = {
+        'format': 'bestaudio',
+        'outtmpl': f'{temp_dir.name}/%(title)s.ogg'
+    }
+    with  YoutubeDL(options) as ytdl:
+        ytdl.download([music_url])
+    return temp_dir

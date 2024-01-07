@@ -1,4 +1,5 @@
 import openai
+from openai import OpenAI
 
 from bot.constants import bot
 from db.config import api_keys_col
@@ -23,14 +24,14 @@ def expire_openai_api_key(user_id):
 
 def test_openai_api_key(key):
     try:
-        response = openai.ChatCompletion.create(
+        openai_client = OpenAI(api_key=key)
+        response = openai_client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": 'Hello'}, ],
-            api_key=key
-        )
-        print(response)
+            max_tokens=5
+        ).model_dump()
         if response.get('choices')[0].get('message').get('content'):
             return True
         return False
-    except openai.error.AuthenticationError:
+    except openai.AuthenticationError:
         return False

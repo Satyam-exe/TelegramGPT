@@ -33,7 +33,7 @@ def reply_to_text_prompt(message: telebot.types.Message):
             bot.reply_to(message=message, text=reply)
         except telebot.apihelper.ApiTelegramException:
             on_api_telegram_exception_429(reply_to_text_prompt, message)
-        except openai.error.RateLimitError:
+        except openai.RateLimitError:
             bot.reply_to(message, api_key_expired_message)
     else:
         bot.reply_to(message, api_key_not_set_message('OpenAI'))

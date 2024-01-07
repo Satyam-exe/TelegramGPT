@@ -1,0 +1,2 @@
+[console_scripts]
+dw = downloader_cli.main:main

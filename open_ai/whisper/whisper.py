@@ -1,8 +1,8 @@
 import tempfile
 import urllib.request
 
-import openai
 import telebot
+from openai import OpenAI
 
 from bot.constants import bot
 
@@ -16,12 +16,12 @@ from settings import TEMP_OGG_DIR, TEMP_MP3_DIR
 def transcribe_voice(message: telebot.types.Message):
     api_key = get_api_key(user_id=message.from_user.id, key_type='openai')
     path_array = download_voice_as_mp3(voice=message.voice)
+    openai_client = OpenAI(api_key=api_key)
     with open(path_array[1].name, 'rb') as mp3_file:
-        transcribed_voice_response = openai.Audio.transcribe(
+        transcribed_voice_response = openai_client.audio.transcriptions.create(
             model='whisper-1',
             file=mp3_file,
-            api_key=api_key
-        )
+        ).model_dump()
     transcribed_voice = transcribed_voice_response.get('text')
     insert_voice(message=message, path=path_array[0], transcribed_voice=transcribed_voice)
     path_array[1].close()
@@ -31,12 +31,12 @@ def transcribe_voice(message: telebot.types.Message):
 def translate_voice(message: telebot.types.Message):
     api_key = get_api_key(user_id=message.from_user.id, key_type='openai')
     path_array = download_voice_as_mp3(voice=message.voice)
+    openai_client = OpenAI(api_key=api_key)
     with open(path_array[0], 'rb') as mp3_file:
-        translated_voice_response = openai.Audio.translate(
+        translated_voice_response = openai_client.audio.translations.create(
             model='whisper-1',
             file=mp3_file,
-            api_key=api_key
-        )
+        ).model_dump()
     translated_voice = translated_voice_response.get('text')
     insert_voice(message=message, path=path_array[1], translated_voice=translated_voice)
     path_array[1].close()

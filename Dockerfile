@@ -1,5 +1,5 @@
 # Use the official Python image as the base image
-FROM python:3.9
+FROM python:3.11
 
 # Install ffmpeg using apt-get
 RUN apt-get update && apt-get install -y ffmpeg

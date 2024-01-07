@@ -1,3 +1,4 @@
+import os.path
 from tempfile import TemporaryDirectory
 
 import telebot
@@ -53,7 +54,8 @@ def reply_with_music(message: telebot.types.Message):
                     f"Sending {song_name} by {artist}"
                 )
             temp_dir: TemporaryDirectory[str | bytes]
-            ogg_file, temp_dir = convert_yt_to_ogg(song_id=song_id)
+            temp_dir = convert_yt_to_ogg(song_id=song_id)
+            ogg_file = os.path.join(temp_dir.name, os.listdir(temp_dir.name)[0])
             bot.send_voice(chat_id=message.chat.id, voice=open(ogg_file, 'rb'), reply_to_message_id=message.message_id)
             temp_dir.cleanup()
         else:

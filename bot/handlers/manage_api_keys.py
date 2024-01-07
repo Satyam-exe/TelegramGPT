@@ -1,5 +1,5 @@
-import openai.error
 import telebot.types
+from openai import RateLimitError
 
 from bot.constant_messages import empty_api_key_message, invalid_api_key_message, api_key_setup_successful_message, \
     api_key_update_successful_message, api_key_remove_successful_message, set_api_key_message, api_key_expired_message
@@ -57,8 +57,10 @@ def manage_api_keys_command(message: telebot.types.Message):
             bot.reply_to(message, api_key_remove_successful_message)
     except telebot.apihelper.ApiTelegramException:
         on_api_telegram_exception_429(manage_api_keys_command, message)
-    except openai.error.RateLimitError:
+    except RateLimitError:
         bot.reply_to(message, api_key_expired_message)
+    except Exception as e:
+        print(str(e))
 
 
 def register_api_key_command():

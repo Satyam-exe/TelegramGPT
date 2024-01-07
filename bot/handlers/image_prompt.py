@@ -22,9 +22,9 @@ def reply_with_dalle_img(message: telebot.types.Message):
                 prompt = message.text.replace('/img@sv_telegram_gpt_bot', '')
             else:
                 prompt = message.text.replace('/img', '')
-            for str in str_list:
-                if 'size=' in str:
-                    untested_size = str.split('=')[1]
+            for strings in str_list:
+                if 'size=' in strings:
+                    untested_size = strings.split('=')[1]
                     if 'x' in untested_size.lower():
                         dimensions_list = untested_size.split('x')
                         if len(dimensions_list) == 2:
@@ -45,10 +45,11 @@ def reply_with_dalle_img(message: telebot.types.Message):
         except telebot.apihelper.ApiTelegramException as e:
             if e.error_code == 429:
                 on_api_telegram_exception_429(reply_with_dalle_img, message)
-        except openai.error.InvalidRequestError:
             bot.reply_to(message, invalid_size_message)
-        except openai.error.RateLimitError:
+        except openai.RateLimitError:
             bot.reply_to(message, api_key_expired_message)
+        except Exception as e:
+            print(str(e))
     else:
         bot.reply_to(message, api_key_not_set_message('OpenAI'))
 
